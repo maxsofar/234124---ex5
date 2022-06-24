@@ -2,7 +2,6 @@ import json
 import os
 
 
-
 def names_of_registered_students(input_json_path, course_name):
     """
     This function returns a list of the names of the students who registered for
@@ -12,7 +11,17 @@ def names_of_registered_students(input_json_path, course_name):
     :param course_name: The name of the course.
     :return: List of the names of the students.
     """
-    pass
+    studentsList = []
+    with open(input_json_path, 'r') as f:
+        data = json.load(f)
+        for (id, info) in data.items():
+            for course in info['registered_courses']:
+                if course == course_name:
+                    studentsList.append(info['student_name'])
+                    break
+    return studentsList
+
+
 
 
 def enrollment_numbers(input_json_path, output_file_path):
@@ -37,4 +46,5 @@ def courses_for_lecturers(json_directory_path, output_json_path):
     pass
 
 
-
+print(names_of_registered_students("/Users/Max/PycharmProjects/ex5/students_database.json",
+                                   "Introduction to Systems Programming"))
