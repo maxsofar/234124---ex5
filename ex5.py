@@ -14,14 +14,12 @@ def names_of_registered_students(input_json_path, course_name):
     students_list = []
     with open(input_json_path, 'r') as i:
         data = json.load(i)
-        for (id, info) in data.items():
+        for (id_num, info) in data.items():
             for course in info['registered_courses']:
                 if course == course_name:
                     students_list.append(info['student_name'])
                     break
     return students_list
-
-
 
 
 def enrollment_numbers(input_json_path, output_file_path):
@@ -37,7 +35,7 @@ def enrollment_numbers(input_json_path, output_file_path):
         with open(output_file_path, 'w') as o:
             data = json.load(i)
             courses_list = {}
-            for (id, info) in data.items():
+            for (id_num, info) in data.items():
                 for course in info['registered_courses']:
                     if course in courses_list:
                         courses_list[course] += 1
@@ -51,7 +49,7 @@ def courses_for_lecturers(json_directory_path, output_json_path):
     """
     This function writes the courses given by each lecturer in json format.
 
-    :param json_directory_path: Path of the semsters_data files.
+    :param json_directory_path: Path of the semesters_data files.
     :param output_json_path: Path of the output json file.
     """
     lecturers_list = {}
@@ -67,15 +65,5 @@ def courses_for_lecturers(json_directory_path, output_json_path):
                                 lecturers_list[lecturer].append(info['course_name'])
                         else:
                             lecturers_list[lecturer] = [info['course_name']]
-    for file in os.listdir(output_json_path):
-        file_path = os.path.join(output_json_path, file)
-        if os.path.isfile(file_path) and file_path.endswith('.json'):
-            with open(file_path, 'w') as o:
-                json.dump(lecturers_list, o, indent=4)
-
-
-# print(names_of_registered_students("/Users/Max/PycharmProjects/ex5/students_database.json",
-#                                 "Introduction to Systems Programming"))
-#enrollment_numbers("/Users/Max/PycharmProjects/ex5/students_database.json", "output.txt")
-
-#courses_for_lecturers("semesters_databases", "output")
+    with open(output_json_path, 'w') as o:
+        json.dump(lecturers_list, o, indent=4)
