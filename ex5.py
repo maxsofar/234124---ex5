@@ -11,15 +11,15 @@ def names_of_registered_students(input_json_path, course_name):
     :param course_name: The name of the course.
     :return: List of the names of the students.
     """
-    studentsList = []
-    with open(input_json_path, 'r') as f:
-        data = json.load(f)
+    students_list = []
+    with open(input_json_path, 'r') as i:
+        data = json.load(i)
         for (id, info) in data.items():
             for course in info['registered_courses']:
                 if course == course_name:
-                    studentsList.append(info['student_name'])
+                    students_list.append(info['student_name'])
                     break
-    return studentsList
+    return students_list
 
 
 
@@ -33,17 +33,17 @@ def enrollment_numbers(input_json_path, output_file_path):
     :param output_file_path: Path of the output text file.
     """
 
-    with open(input_json_path, 'r') as f:
+    with open(input_json_path, 'r') as i:
         with open(output_file_path, 'w') as o:
-            data = json.load(f)
-            coursesList = {}
+            data = json.load(i)
+            courses_list = {}
             for (id, info) in data.items():
                 for course in info['registered_courses']:
-                    if course in coursesList:
-                        coursesList[course] += 1
+                    if course in courses_list:
+                        courses_list[course] += 1
                     else:
-                        coursesList[course] = 1
-            for (course, numberOfStudents) in sorted(coursesList.items()):
+                        courses_list[course] = 1
+            for (course, numberOfStudents) in sorted(courses_list.items()):
                 o.write('"' + course + '" ' + str(numberOfStudents) + '\n')
 
 
@@ -54,9 +54,28 @@ def courses_for_lecturers(json_directory_path, output_json_path):
     :param json_directory_path: Path of the semsters_data files.
     :param output_json_path: Path of the output json file.
     """
-    pass
+    lecturers_list = {}
+    for file in os.listdir(json_directory_path):
+        file_path = os.path.join(json_directory_path, file)
+        if os.path.isfile(file_path) and file_path.endswith('.json'):
+            with open(file_path, 'r') as i:
+                data = json.load(i)
+                for (courseNum, info) in data.items():
+                    for lecturer in info['lecturers']:
+                        if lecturer in lecturers_list.keys():
+                            if info['course_name'] not in lecturers_list[lecturer]:
+                                lecturers_list[lecturer].append(info['course_name'])
+                        else:
+                            lecturers_list[lecturer] = [info['course_name']]
+    for file in os.listdir(output_json_path):
+        file_path = os.path.join(output_json_path, file)
+        if os.path.isfile(file_path) and file_path.endswith('.json'):
+            with open(file_path, 'w') as o:
+                json.dump(lecturers_list, o, indent=4)
 
 
 # print(names_of_registered_students("/Users/Max/PycharmProjects/ex5/students_database.json",
-#                                    "Introduction to Systems Programming"))
-enrollment_numbers("/Users/Max/PycharmProjects/ex5/students_database.json", "output.txt")
+#                                 "Introduction to Systems Programming"))
+#enrollment_numbers("/Users/Max/PycharmProjects/ex5/students_database.json", "output.txt")
+
+#courses_for_lecturers("semesters_databases", "output")
