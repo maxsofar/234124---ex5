@@ -32,8 +32,19 @@ def enrollment_numbers(input_json_path, output_file_path):
     :param input_json_path: Path of the students database json file.
     :param output_file_path: Path of the output text file.
     """
-    pass
 
+    with open(input_json_path, 'r') as f:
+        with open(output_file_path, 'w') as o:
+            data = json.load(f)
+            coursesList = {}
+            for (id, info) in data.items():
+                for course in info['registered_courses']:
+                    if course in coursesList:
+                        coursesList[course] += 1
+                    else:
+                        coursesList[course] = 1
+            for (course, numberOfStudents) in sorted(coursesList.items()):
+                o.write('"' + course + '" ' + str(numberOfStudents) + '\n')
 
 
 def courses_for_lecturers(json_directory_path, output_json_path):
@@ -46,5 +57,6 @@ def courses_for_lecturers(json_directory_path, output_json_path):
     pass
 
 
-print(names_of_registered_students("/Users/Max/PycharmProjects/ex5/students_database.json",
-                                   "Introduction to Systems Programming"))
+# print(names_of_registered_students("/Users/Max/PycharmProjects/ex5/students_database.json",
+#                                    "Introduction to Systems Programming"))
+enrollment_numbers("/Users/Max/PycharmProjects/ex5/students_database.json", "output.txt")
